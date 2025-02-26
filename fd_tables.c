@@ -4,9 +4,8 @@
 #include <unistd.h>
 #include <stdbool.h>
 #include <math.h>
-#include <sys/types.h>
-#include <dirent.h>
-#include <ctype.h>
+
+#include "process_node.h"
 
 
 // CDT which holds the program specifications
@@ -22,31 +21,6 @@ typedef struct tool_specifications {
     int target_pid; // Value of -1 if there is no target PID
 } ToolSpecifications;
 
-// Linked List data structure for the processes
-typedef struct process_node {
-    int pid;
-    struct process_node* next;
-} ProcessNode;
-
-
-// Creates a ProcessNode
-ProcessNode* create_process(int pid) {
-    ProcessNode* process = (ProcessNode*)malloc(sizeof(ProcessNode));
-    process->pid = pid;
-    process->next = NULL;
-
-    return process;
-}
-
-// Frees all nodes in a Process Linked List
-void free_processes(ProcessNode* processes) {
-    ProcessNode* temp;
-    while (processes) {
-        temp = processes;
-        processes = processes->next;
-        free(temp);
-    }
-}
 
 // Processes the command line arguments
 ToolSpecifications* process_arguments(int argc, char* argv[]) {
@@ -86,40 +60,11 @@ ToolSpecifications* process_arguments(int argc, char* argv[]) {
     return specs;
 }
 
-// Gets the PIDs of current processes and stores them in pids
-ProcessNode* get_pids() {
-    // Opening the /proc directory to find the processes
-    DIR* proc_dir = opendir("/proc");
-
-    // If there is an issue with opening /proc, output an error
-    if (!proc_dir) {
-        perror("Error opening /proc.");
-        exit(EXIT_FAILURE);
-    }
-
-    // Processing each entry for a process
-    struct dirent* entry;
-    ProcessNode* head = NULL;
-    while ((entry = readdir(proc_dir))) {
-        // If entry is a process, add to pids
-        if (isdigit(entry->d_name[0])) {
-            ProcessNode* process = create_process(atoi(entry->d_name));
-            process->next = head;
-            head = process;
-        }
-    }
-
-    // Closing /proc
-    closedir(proc_dir);
-
-    return head;
-}
-
 int main(int argc, char* argv[]) {
     // Processing the arguments
     ToolSpecifications* specs = process_arguments(argc, argv);
 
-    ProcessNode* processes = get_pids();
+    ProcessNode* processes = get_processes();
     while (processes) {
         printf("%d\n", processes->pid);
         processes = processes->next;
