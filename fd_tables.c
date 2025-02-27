@@ -67,6 +67,11 @@ int main(int argc, char* argv[]) {
     ProcessNode* processes = get_processes();
     while (processes) {
         printf("%d\n", processes->pid);
+        FDNode* fds = processes->fds;
+        while (fds) {
+            printf("\t%s\n", fds->file_name);
+            fds = fds->next;
+        }
         processes = processes->next;
     }
 

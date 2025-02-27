@@ -5,7 +5,9 @@
 #include <stdio.h>
 #include <dirent.h>
 #include <ctype.h>
-
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 // Linked List data structure for the FDs
 typedef struct fd_node {

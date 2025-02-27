@@ -28,7 +28,7 @@ ProcessNode* get_processes() {
 
     // If there is an issue with opening /proc, output an error
     if (!proc_dir) {
-        perror("Error opening /proc.");
+        perror("Error opening /proc.\n");
         exit(EXIT_FAILURE);
     }
 
@@ -43,10 +43,10 @@ ProcessNode* get_processes() {
             int pid = atoi(entry->d_name);
 
             // Finding the FDs
-            // TODO
+            FDNode* fds = get_fds(pid);
 
             // Creating a new Process Node
-            ProcessNode* process = create_process(pid, NULL);
+            ProcessNode* process = create_process(pid, fds);
             
             // Appending to the list of processes
             if (!tail) {
