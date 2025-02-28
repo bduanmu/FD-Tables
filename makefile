@@ -5,11 +5,11 @@ CFLAGS = -Wall -Werror -std=c99 -g
 # Output executable
 TARGET = fd_tables
 # Source files
-SRC = fd_tables.c process_node.c fd_node.c
+SRC = fd_tables.c process_node.c fd_node.c output_utils.c
 # Object files
 OBJ = $(SRC:.c=.o)
 # Header files
-DEPS = process_node.h fd_node.h
+DEPS = process_node.h fd_node.h output_utils.h
 
 # Default rule to build the executable
 all: $(TARGET)

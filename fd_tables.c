@@ -6,6 +6,7 @@
 #include <math.h>
 
 #include "process_node.h"
+#include "output_utils.h"
 
 
 // CDT which holds the program specifications
@@ -65,15 +66,7 @@ int main(int argc, char* argv[]) {
     ToolSpecifications* specs = process_arguments(argc, argv);
 
     ProcessNode* processes = get_processes();
-    while (processes) {
-        printf("%d\n", processes->pid);
-        FDNode* fds = processes->fds;
-        while (fds) {
-            printf("\t%s\n", fds->file_name);
-            fds = fds->next;
-        }
-        processes = processes->next;
-    }
+    print_composite(processes, stdout);
 
     free_processes(processes);
     free(specs);

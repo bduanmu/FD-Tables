@@ -55,6 +55,7 @@ FDNode* get_fds(int pid) {
                 head = process;
                 tail = process;
             } else {
+                head->size++;
                 tail->next = process;
                 tail = process;
             }
