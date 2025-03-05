@@ -16,6 +16,7 @@ FDNode* create_fd(int fd, char* filename, long vnode) {
 
  // Frees all nodes in a FD Linked List
 void free_fds(FDNode* fds) {
+    // Looping through each FD node and individually frees them
     FDNode* temp;
     while (fds) {
         temp = fds;

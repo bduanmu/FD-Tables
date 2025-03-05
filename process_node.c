@@ -12,11 +12,12 @@ ProcessNode* create_process(int pid, FDNode* fds) {
 
 // Frees all nodes in a Process Linked List
 void free_processes(ProcessNode* processes) {
+    // Looping through each process node and individually frees them
     ProcessNode* temp;
     while (processes) {
         temp = processes;
         processes = processes->next;
-        free_fds(temp->fds);
+        free_fds(temp->fds); // Freeing the stored FDs
         free(temp);
     }
 }

@@ -67,9 +67,13 @@ int main(int argc, char* argv[]) {
     // Processing the arguments
     ToolSpecifications* specs = process_arguments(argc, argv);
 
+    // Retrieving data
     ProcessNode* processes = get_processes();
+
+    // Outputting data
     print_composite(processes, stdout);
 
+    // Freeing data structures
     free_processes(processes);
     free(specs);
 
