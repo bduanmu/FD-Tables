@@ -81,9 +81,9 @@ FDNode* get_fds(int pid) {
     return head;
 }
 
-// Gets the filename of a link
+// Gets the filename from a symlink
 char* get_filename(char* path, char* filename, int length) {
-    // Read the symbolic link at the path provided
+    // Read the symlink at the path provided
     int len = readlink(path, filename, length - 1);
 
     // If failed to read link, output an error
