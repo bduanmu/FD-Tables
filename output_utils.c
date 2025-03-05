@@ -13,7 +13,7 @@ void print_composite(ProcessNode* processes, FILE* stream) {
     while (processes) {
         FDNode* fds = processes->fds;
         while (fds) {
-            fprintf(stream, "%d\t%d\t%d\t%s\t\t\t%d\n", i, processes->pid, fds->fd, fds->file_name, fds->size);
+            fprintf(stream, "%d\t%d\t%d\t%-20s    %ld\n", i, processes->pid, fds->fd, fds->filename, fds->vnode);
             fds = fds->next;
 
             i++;

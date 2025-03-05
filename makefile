@@ -26,8 +26,5 @@ $(TARGET): $(OBJ)
 clean:
 	rm -f $(OBJ) $(TARGET)
 
-# Rebuild everything
-rebuild: clean all
-
 # Phony targets
-.PHONY: all clean rebuild
+.PHONY: all clean

@@ -3,10 +3,10 @@
 #include "fd_node.h"
 
 // Creates a FD Node
-FDNode* create_fd(int fd, char* file_name, long vnode) {
+FDNode* create_fd(int fd, char* filename, long vnode) {
     FDNode* fd_node = (FDNode*)malloc(sizeof(FDNode));
     fd_node->fd = fd;
-    fd_node->file_name = file_name;
+    strncpy(fd_node->filename, filename, FILENAME_LENGTH);
     fd_node->vnode = vnode;
     fd_node->size = 1;
     fd_node->next = NULL;
@@ -31,10 +31,13 @@ FDNode* get_fds(int pid) {
     sprintf(dir_address, "/proc/%d/fd", pid);
     DIR* fd_dir = opendir(dir_address);
 
-    // If there is an issue with opening /proc, output an error
+    // If we cannot access the FDs of a certain process, return NULL
     if (!fd_dir) {
-        fprintf(stderr, "Error opening /proc/%d/fd.\n", pid);
-        exit(EXIT_FAILURE);
+        // Closing /proc
+        closedir(fd_dir);
+
+        // Return NULL
+        return NULL;
     }
 
     // Processing each entry for a process
@@ -47,17 +50,27 @@ FDNode* get_fds(int pid) {
             // Getting the FD
             int fd = atoi(entry->d_name);
 
-            // Creating a new Process Node
-            FDNode* process = create_fd(fd, entry->d_name, -1); // TODO: Add filename and vnode count
+            // Getting the filename
+            char filename[FILENAME_LENGTH];
+            char path[100];
+            sprintf(path, "/proc/%d/fd/%d", pid, fd);
+            get_filename(path, filename, FILENAME_LENGTH);
+
+            // Getting the Vnode
+            long vnode = entry->d_ino;
+            
+
+            // Creating a new FD Node
+            FDNode* fd_node = create_fd(fd, filename, vnode);
             
             // Appending to the list of processes
             if (!tail) {
-                head = process;
-                tail = process;
+                head = fd_node;
+                tail = fd_node;
             } else {
                 head->size++;
-                tail->next = process;
-                tail = process;
+                tail->next = fd_node;
+                tail = fd_node;
             }
         }
     }
@@ -66,4 +79,21 @@ FDNode* get_fds(int pid) {
     closedir(fd_dir);
 
     return head;
+}
+
+// Gets the filename of a link
+char* get_filename(char* path, char* filename, int length) {
+    // Read the symbolic link at the path provided
+    int len = readlink(path, filename, length - 1);
+
+    // If failed to read link, output an error
+    if (len == -1) {
+        fprintf(stderr, "Error reading link at %s.\n", path);
+        exit(EXIT_FAILURE);
+    }
+
+    // Ending the filename in the proper place
+    filename[len] = '\0';
+
+    return filename;
 }

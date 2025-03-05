@@ -45,6 +45,9 @@ ProcessNode* get_processes() {
             // Finding the FDs
             FDNode* fds = get_fds(pid);
 
+            // If a process's FDs cannot be accessed, ignore it
+            if (!fds) continue;
+
             // Creating a new Process Node
             ProcessNode* process = create_process(pid, fds);
             
