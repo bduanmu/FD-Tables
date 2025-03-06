@@ -63,6 +63,53 @@ ToolSpecifications* process_arguments(int argc, char* argv[]) {
     return specs;
 }
 
+// Outputs the necassary data
+void output_data(ToolSpecifications* specs, ProcessNode* processes) {
+    // Find the processes we want to output in our table
+    ProcessNode* processes_to_output = processes;
+
+    if (specs->target_pid != -1) {
+        // Find the target process
+        while (processes_to_output && processes_to_output->pid != specs->target_pid) {
+            processes_to_output = processes_to_output->next;
+        }
+
+        // If the target process cannot be found, output an error
+        if (!processes_to_output) {
+            fprintf(stderr, "Error finding process %d.\n", specs->target_pid);
+            exit(EXIT_FAILURE);
+        }
+
+        // Create new single process for the target process
+        processes_to_output = create_process(processes_to_output->pid, processes_to_output->fds);
+    }
+
+    // Print the tables asked for by the user
+    if (specs->show_process) print_process_table(processes_to_output, stdout);
+    if (specs->show_system_wide) print_system_wide_table(processes_to_output, stdout);
+    if (specs->show_vnodes) print_vnodes_table(processes_to_output, stdout);
+    if (specs->show_composite) print_composite(processes_to_output, stdout);
+    if (specs->show_summary) print_summary(processes, stdout);
+    if (specs->threshold != -1) print_offending(processes, stdout, specs->threshold);
+
+    // Output to a txt file if needed
+    if (specs->save_to_txt_file) {
+        FILE* txt_file = fopen("compositeTable.txt", "w");
+        print_composite(processes_to_output, txt_file);
+        fclose(txt_file);
+    }
+
+    // Output to a bin file if needed
+    if (specs->save_to_bin_file) {
+        FILE* bin_file = fopen("compositeTable.bin", "wb");
+        print_composite(processes_to_output, bin_file);
+        fclose(bin_file);
+    }
+
+    // If we created a new Process node, free it
+    if (specs->target_pid != -1) free(processes_to_output); // Free process but not the FDs
+}
+
 int main(int argc, char* argv[]) {
     // Processing the arguments
     ToolSpecifications* specs = process_arguments(argc, argv);
@@ -71,7 +118,7 @@ int main(int argc, char* argv[]) {
     ProcessNode* processes = get_processes();
 
     // Outputting data
-    print_composite(processes, stdout);
+    output_data(specs, processes);
 
     // Freeing data structures
     free_processes(processes);
