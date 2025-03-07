@@ -102,7 +102,7 @@ void output_data(ToolSpecifications* specs, ProcessNode* processes) {
             exit(EXIT_FAILURE);
         }
 
-        print_composite(processes_to_output, txt_file);
+        print_composite_less(processes_to_output, txt_file);
         fclose(txt_file);
     }
 
@@ -116,7 +116,7 @@ void output_data(ToolSpecifications* specs, ProcessNode* processes) {
             exit(EXIT_FAILURE);
         }
 
-        print_composite_bin(processes_to_output, bin_file);
+        print_composite_less_bin(processes_to_output, bin_file);
         fclose(bin_file);
     }
 

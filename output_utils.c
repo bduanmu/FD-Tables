@@ -24,31 +24,41 @@ void print_composite(ProcessNode* processes, FILE* stream) {
     fprintf(stream, "\t================================================\n\n");
 }
 
-// Outputs the composite table in binary
-void print_composite_bin(ProcessNode* processes, FILE* stream) {
-    // Print the header
-    char* header = "\tPID\tFD\tFilename\t\tInode\n\t================================================\n";
-    fwrite(header, sizeof(char), strlen(header), stream);
+// Outputs the composite table with less formatting
+void print_composite_less(ProcessNode* processes, FILE* stream) {
+    // Loop through every process and every FD
+    while (processes) {
+        FDNode* fds = processes->fds;
+        while (fds) {
+            fprintf(stream, "%d\t%d\t%s\t%ld\n", processes->pid, fds->fd, fds->filename, fds->vnode);
+            fds = fds->next;
+        }
+        processes = processes->next;
+    }
+}
 
-    // Count the line number
-    int i = 0;
+// Outputs the composite table with less formatting in binary
+void print_composite_less_bin(ProcessNode* processes, FILE* stream) {
+    char separator[1] = "\t";
+    char end[1] = "\n";
 
     // Loop through every process and every FD
     while (processes) {
         FDNode* fds = processes->fds;
         while (fds) {
-            char entry[2048];
-            sprintf(entry, "%d\t%d\t%d\t%-20s    %ld\n", i, processes->pid, fds->fd, fds->filename, fds->vnode);
-            fwrite(entry, sizeof(char), strlen(entry), stream);
-            fds = fds->next;
+            fwrite(&processes->pid, sizeof(int), 1, stream);
+            fwrite(separator, sizeof(char), 1, stream);
+            fwrite(&fds->fd, sizeof(int), 1, stream);
+            fwrite(separator, sizeof(char), 1, stream);
+            fwrite(fds->filename, sizeof(char), strlen(fds->filename), stream);
+            fwrite(separator, sizeof(char), 1, stream);
+            fwrite(&fds->vnode, sizeof(long), 1, stream);
+            fwrite(end, sizeof(char), 1, stream);
 
-            i++;
+            fds = fds->next;
         }
         processes = processes->next;
     }
-    
-    char* footer = "\t================================================\n\n";
-    fwrite(footer, sizeof(char), strlen(footer), stream);
 }
 
 // Outputs the table with only the processes and FDs
