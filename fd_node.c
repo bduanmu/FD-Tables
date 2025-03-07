@@ -83,18 +83,15 @@ FDNode* get_fds(int pid) {
 }
 
 // Gets the filename from a symlink
-char* get_filename(char* path, char* filename, int length) {
+void get_filename(char* path, char* filename, int length) {
     // Read the symlink at the path provided
     int len = readlink(path, filename, length - 1);
 
     // If failed to read link, output an error
     if (len == -1) {
-        fprintf(stderr, "Error reading link at %s.\n", path);
-        exit(EXIT_FAILURE);
+        strcpy(filename, "Filename Unavailable");
+    } else {
+        // Ending the filename in the proper place
+        filename[len] = '\0';
     }
-
-    // Ending the filename in the proper place
-    filename[len] = '\0';
-
-    return filename;
 }

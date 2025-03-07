@@ -24,6 +24,33 @@ void print_composite(ProcessNode* processes, FILE* stream) {
     fprintf(stream, "\t================================================\n\n");
 }
 
+// Outputs the composite table in binary
+void print_composite_bin(ProcessNode* processes, FILE* stream) {
+    // Print the header
+    char* header = "\tPID\tFD\tFilename\t\tInode\n\t================================================\n";
+    fwrite(header, sizeof(char), strlen(header), stream);
+
+    // Count the line number
+    int i = 0;
+
+    // Loop through every process and every FD
+    while (processes) {
+        FDNode* fds = processes->fds;
+        while (fds) {
+            char entry[2048];
+            sprintf(entry, "%d\t%d\t%d\t%-20s    %ld\n", i, processes->pid, fds->fd, fds->filename, fds->vnode);
+            fwrite(entry, sizeof(char), strlen(entry), stream);
+            fds = fds->next;
+
+            i++;
+        }
+        processes = processes->next;
+    }
+    
+    char* footer = "\t================================================\n\n";
+    fwrite(footer, sizeof(char), strlen(footer), stream);
+}
+
 // Outputs the table with only the processes and FDs
 void print_process_table(ProcessNode* processes, FILE* stream) {
     // Print the header

@@ -95,6 +95,13 @@ void output_data(ToolSpecifications* specs, ProcessNode* processes) {
     // Output to a txt file if needed
     if (specs->save_to_txt_file) {
         FILE* txt_file = fopen("compositeTable.txt", "w");
+
+        // If there is an issue with opening compositeTable.txt, output an error
+        if (!txt_file) {
+            perror("Error opening compositeTable.txt.\n");
+            exit(EXIT_FAILURE);
+        }
+
         print_composite(processes_to_output, txt_file);
         fclose(txt_file);
     }
@@ -102,7 +109,14 @@ void output_data(ToolSpecifications* specs, ProcessNode* processes) {
     // Output to a bin file if needed
     if (specs->save_to_bin_file) {
         FILE* bin_file = fopen("compositeTable.bin", "wb");
-        print_composite(processes_to_output, bin_file);
+
+        // If there is an issue with opening compositeTable.bin, output an error
+        if (!bin_file) {
+            perror("Error opening compositeTable.bin.\n");
+            exit(EXIT_FAILURE);
+        }
+
+        print_composite_bin(processes_to_output, bin_file);
         fclose(bin_file);
     }
 

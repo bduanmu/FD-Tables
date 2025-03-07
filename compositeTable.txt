@@ -1,34 +1,20 @@
 	PID	FD	Filename		Inode
 	================================================
-0	421	0	/dev/null               22770
-1	421	1	socket:[22782]          22771
-2	421	2	socket:[22782]          22772
-3	421	3	socket:[22796]          22773
-4	421	4	anon_inode:[eventpoll]    22774
-5	421	5	anon_inode:[signalfd]    20088
-6	421	6	anon_inode:inotify      20089
-7	421	7	/sys/fs/cgroup/unified/user.slice/user-1000.slice/user@1000.service    20090
-8	421	9	/usr/lib/systemd/systemd-executor    22797
-9	421	10	anon_inode:[eventpoll]    22768
-10	421	11	anon_inode:inotify      20091
-11	421	12	socket:[22817]          22798
-12	421	13	/proc/421/mountinfo     20092
-13	421	14	anon_inode:inotify      20093
-14	421	15	socket:[22801]          20094
-15	421	16	socket:[22807]          22800
-16	421	17	socket:[22808]          22805
-17	421	18	socket:[22809]          22803
-18	421	19	socket:[22810]          22806
-19	421	20	socket:[22811]          22802
-20	421	21	anon_inode:[timerfd]    20095
-21	421	22	anon_inode:[timerfd]    20096
-22	421	26	socket:[22839]          22818
-23	421	28	socket:[22819]          20097
-24	421	29	socket:[22821]          22820
-25	421	30	socket:[22823]          22822
-26	421	33	socket:[22825]          20098
-27	421	34	socket:[22827]          22826
-28	421	35	socket:[22829]          22828
-29	421	36	socket:[22831]          22830
+0	217	0	/dev/null               235
+1	217	1	socket:[247]            236
+2	217	2	socket:[247]            237
+3	217	3	socket:[23673]          238
+4	217	4	anon_inode:[eventpoll]    239
+5	217	5	anon_inode:[signalfd]    19288
+6	217	6	anon_inode:[timerfd]    19289
+7	217	7	socket:[23677]          19290
+8	217	8	socket:[23678]          19291
+9	217	9	socket:[23679]          233
+10	217	10	socket:[23680]          19292
+11	217	11	anon_inode:inotify      19293
+12	217	13	anon_inode:[timerfd]    19294
+13	217	14	anon_inode:[timerfd]    19295
+14	217	15	anon_inode:[timerfd]    19296
+15	217	17	socket:[23701]          19297
 	================================================
 

@@ -31,6 +31,6 @@ void free_fds(FDNode* fds);
 // Gets the FDs of a process with given PID
 FDNode* get_fds(int pid);
 
-char* get_filename(char* path, char* filename, int length);
+void get_filename(char* path, char* filename, int length);
 
 #endif

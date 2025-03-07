@@ -10,6 +10,9 @@
 // Outputs the composite table
 void print_composite(ProcessNode* processes, FILE* stream);
 
+// Outputs the composite table in binary
+void print_composite_bin(ProcessNode* processes, FILE* stream);
+
 // Outputs the table with only the processes and FDs
 void print_process_table(ProcessNode* processes, FILE* stream);
 
