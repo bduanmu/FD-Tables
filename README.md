@@ -54,4 +54,84 @@ This module has three functions:
     * The main function first processes the arguments using `process_arguments`, then gets the processes using `get_processes` from `process_node`, outputs the data using `output_data`, frees the created structures, and exits successfully. 
 
 ## Flow Chart
-![alt text](image.png)
+![Flow Chart](flow_chart.png)
+
+## How to Compile
+This file uses a makefile. The `make all` or `make` rule compiles the program using the proper compiler and flags into an executable called `fd_tables` by linking all the `.c` files into a single executable. The `make clean` rule cleans the files by removing the `.o` files and the executable. 
+
+## Expected Results
+
+When not given any flags, the program should output the composite table which includes data for all the processes, their PIDs, their FDs, the filenames, and the Vnodes. When given a flags for specific tables (tables being the process, system wide, Vnodes, composite, and summary tables), only those tables will appear. If an FD threshold is specified, it will list the offending processes. If only the threshold flag is included, the default output (i.e. the composite table) will also be outputted. If an integer is given as the first argument, it will only show info pertaining to the process with that integer as the PID. If any of the output flags are used, it will create or edit the relevant file and store the information in it. 
+
+## Test Cases
+
+Here are some test cases to consider: 
+
+* `./fd_tables`
+    * This should output just the composite table.
+* `./fd_tables 432`
+    * If the program cannot access this process, either due to lack of permissions or because the process does not exist, it will output an error message saying it cannot access this file. Otherwise, it will output the composite table only including process 432.
+* `./fd_tables 1 --output_TXT --systemWide --threshold=10 --composite`
+    * If the program cannot access this process, either due to lack of permissions or because the process does not exist, it will output an error message saying it cannot access this file. Otherwise, it will output the following tables in this order: the composite table only including process 1, the system wide table only including process 1, and the list of processes with strictly more than 10 FDs. It will also output a modified composite table only including process 1 to a file called `compositeTable.txt`.
+* `./fd_tables --output_binary --systemWide --threshold=9 --per-process`
+    * This should output the following tables in this order: the process table, the system wide table, and the list of processes with strictly more than 9 FDs. It will also output a modified composite table only including process 1 in binary to a file called `compositeTable.bin`.
+* `./fd_tables akdfkjnkja`
+    * This should output just the composite table.
+* `./fd_tables --composite 432`
+    * This should output just the composite table.
+* `./fd_tables --composite jknkkkk`
+    * This should output just the composite table.
+* `./fd_tables 0`
+    * This should output just the composite table.
+* `./fd_tables -1`
+    * This should output just the composite table.
+* `./fd_tables --threshold=gfgggggggg`
+    * This should output just the composite table.
+* `./fd_tables --threshold=0`
+    * This should output just the composite table.
+* `./fd_tables --threshold=-1234`
+    * This should output just the composite table.
+
+## Outputting in ASCII vs Outputting in Binary
+
+All tests were run with five samples. Note the `time` command does not give much accuracy for such a fast program, so take the time statistics with a grain of salt.
+
+`txt` file:
+* All processes:
+    * Time:
+        * Avg: 0.0122 Seconds
+        * Standard Deviation: 0.00074833 Seconds
+    * Size: 
+        * Avg: 14217.6 Bytes
+        * Standard Deviation: 1953.13825 Bytes
+* One process:
+    * Time:
+        * Avg: 0.007 Seconds
+        * Standard Deviation: 0 Seconds
+    * Size: 
+        * Avg: 94 Bytes
+        * Standard Deviation: 0 Bytes
+
+`bin` file:
+* All processes:
+    * Time:
+        * Avg: 0.012 Seconds
+        * Standard Deviation: 0.0016733 Seconds
+    * Size: 
+        * Avg: 17155 Bytes
+        * Standard Deviation: 2679.76334 Bytes
+* One process:
+    * Time:
+        * Avg: 0.0072 Seconds
+        * Standard Deviation: 0.0004 Seconds
+    * Size: 
+        * Avg: 120 Bytes
+        * Standard Deviation: 0 Bytes
+
+In terms of speed, likely due to the innaccuracy of the `time` command, I was unable to find much differences between the `txt` and `bin` cases. However, in all cases the size of the `txt` file was smaller than the size of the `bin` files. This is likely because most of the numbers in the output are quite small, likely in the range of numbers where storing them as ASCII is more efficient than storing them an binary numbers. Note these tests were run on my machine, the lab machines tend to have processes with much larger PIDs, so results may differ. 
+
+## Disclaimers
+
+In the case that any file cannot be opened, with the exception of processes and FDs, the program will not function and an error message will be outputted. If a process cannot be accessed it will be skipped unless it was specifically requested, in which case an error message will be outputted. If an FD cannot be accessed it will be skipped. If we cannot get its name, its name will be displayed at `Filename Unavailable`.
+
+The Vnodes displayed are actually the Vnodes of the symlink leading to the FD, meaning you will see discrepancies between the displayed Vnode and the actual Vnode. 
